@@ -4795,7 +4795,11 @@ vless://7b102311-43fd-4e8f-977e-8090623c101d@edt-pages.github.io:443?security=tl
 
             if (!valueElement || !barsElement) return;
 
-            const avgLatency = latencies.filter(l => l !== -1).reduce((a, b) => a + b, 0) / latencies.filter(l => l !== -1).length || -1;
+            // 计算平方根均值 (RMS): sqrt(sum(x²)/n)
+            const validLatencies = latencies.filter(l => l !== -1);
+            const avgLatency = validLatencies.length > 0 
+                ? Math.sqrt(validLatencies.reduce((a, b) => a + b * b, 0) / validLatencies.length)
+                : -1;
 
             if (avgLatency === -1) {
                 valueElement.textContent = '连接失败';
